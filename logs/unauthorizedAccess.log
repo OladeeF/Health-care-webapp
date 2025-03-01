@@ -5,3 +5,4 @@
 2025-03-01T12:42:15.708Z - GET /api/admin/users - No token provided
 2025-03-01T12:42:17.017Z - GET /api/admin/users - No token provided
 2025-03-01T13:17:51.188Z - GET /api/admin/users - No token provided
+2025-03-01T13:21:31.440Z - GET /api/admin/users - Unauthorized admin access attempt
