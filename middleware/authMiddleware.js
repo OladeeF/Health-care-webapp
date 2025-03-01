@@ -17,7 +17,8 @@ const logUnauthorizedAttempt = (message, req) => {
 
 // Middleware to check if a user is authenticated
 exports.authMiddleware = async (req, res, next) => {
-  const token = req.header("Authorization");
+  // Extract the token from the cookie
+  const token = req.cookies.token;
 
   if (!token) {
     logUnauthorizedAttempt("No token provided", req);
@@ -27,10 +28,10 @@ exports.authMiddleware = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(
-      token.replace("Bearer ", ""),
-      process.env.JWT_SECRET
-    );
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find the user and attach to the request object
     req.user = await User.findById(decoded.id).select("-password");
     next();
   } catch (error) {

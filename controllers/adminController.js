@@ -2,7 +2,6 @@ const User = require("../models/User");
 const Doctor = require("../models/Doctor");
 const Appointment = require("../models/Appointment");
 const Patient = require("../models/Patient");
-
 const fs = require("fs");
 const path = require("path");
 

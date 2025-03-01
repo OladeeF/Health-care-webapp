@@ -1,3 +1,4 @@
+const cookieParser = require('cookie-parser');
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -10,6 +11,14 @@ connectDB(); // Connect to MongoDB
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
+
+const jwtSecret = process.env.JWT_SECRET; 
+if (!jwtSecret) {
+  console.error("❌ JWT_SECRET is missing! Set it in the .env file.");
+  process.exit(1); // Stop the server if the secret is missing
+}
+
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/appointments", require("./routes/appointmentRoutes"));
