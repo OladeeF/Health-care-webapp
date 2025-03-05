@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>OGSF Hospital</h3>
+                <p>Admin Dashboard</p>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item active">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="menu-item">
+                    <i>👨‍⚕️</i>
+                    <span>Doctors</span>
+                </div>
+                <div class="menu-item">
+                    <i>🏥</i>
+                    <span>Departments</span>
+                </div>
+                <div class="menu-item">
+                    <i>👨‍👩‍👧‍👦</i>
+                    <span>Patients</span>
+                </div>
+                <div class="menu-item">
+                    <i>📅</i>
+                    <span>Appointments</span>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="search-container">
+                    <i>🔍</i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-profile">
+                    <div class="notification-icon">
+                        <i>🔔</i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="profile-pic">AD</div>
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+
+                <div class="card stat-card patients">
+                    <div class="stat-icon">
+                        <i>👨‍👩‍👧‍👦</i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>1,524</h4>
+                        <p>Total Patients</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card doctors">
+                    <div class="stat-icon">
+                        <i>👨‍⚕️</i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>106</h4>
+                        <p>Doctors</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card appointments">
+                    <div class="stat-icon">
+                        <i>📅</i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>85</h4>
+                        <p>Today's Appointments</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card revenue">
+                    <div class="stat-icon">
+                        <i>👨‍⚕️</i>
+                    
+                    </div>
+                   
+                </div>
+
+    
+                <div class="card chart-card">
+                    <div class="chart-header">
+                        <h3>Patient Statistics</h3>
+                        <select>
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>Last 3 Months</option>
+                            <option>Last Year</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-bars">
+                            <div class="bar" style="height: 60%;" data-value="120">
+                                <span class="bar-label">Mon</span>
+                            </div>
+                            <div class="bar" style="height: 80%;" data-value="160">
+                                <span class="bar-label">Tue</span>
+                            </div>
+                            <div class="bar" style="height: 70%;" data-value="140">
+                                <span class="bar-label">Wed</span>
+                            </div>
+                            <div class="bar" style="height: 90%;" data-value="180">
+                                <span class="bar-label">Thu</span>
+                            </div>
+                            <div class="bar" style="height: 75%;" data-value="150">
+                                <span class="bar-label">Fri</span>
+                            </div>
+                            <div class="bar" style="height: 45%;" data-value="90">
+                                <span class="bar-label">Sat</span>
+                            </div>
+                            <div class="bar" style="height: 35%;" data-value="70">
+                                <span class="bar-label">Sun</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="table-header">
+                        <h3>Recent Appointments</h3>
+                        <a href="#" class="view-all">View All <i>→</i></a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Tajudeen Idan</td>
+                                <td>Dr. Damilola Festus</td>
+                                <td>Cardiology</td>
+                                <td>Mar 01, 2025</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td>
+                                    <button class="action-btn view-btn">View</button>
+                                    <button class="action-btn edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>Dr. John Joe</td>0\
+                                <td>Neurology</td>
+                                <td>Mar 01, 2025</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <button class="action-btn view-btn">View</button>
+                                    <button class="action-btn edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Robert Brown</td>
+                                <td>Dr. Balikis</td>
+                                <td>Orthopedics</td>
+                                <td>Mar 01, 2025</td>
+                                <td><span class="status cancelled">Cancelled</span></td>
+                                <td>
+                                    <button class="action-btn view-btn">View</button>
+                                    <button class="action-btn edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mary Johnson</td>
+                                <td>Dr. Victor</td>
+                                <td>Pediatrics</td>
+                                <td>Mar 01, 2025</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td>
+                                    <button class="action-btn view-btn">View</button>
+                                    <button class="action-btn edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>William Lee</td>
+                                <td>Dr. Soluade</td>
+                                <td>Dermatology</td>
+                                <td>Mar 01, 2025</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <button class="action-btn view-btn">View</button>
+                                    <button class="action-btn edit-btn">Edit</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+ <script src="js.js"></script>
+</body>
+</html>
