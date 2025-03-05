@@ -2688,9 +2688,15 @@
     content: "\ea98"
 }
 
+<<<<<<< HEAD
 .icofont-rounded-down:before {
     content: "\ea99"
 }
+=======
+/* .icofont-rounded-down:before {
+    content: "\ea99"
+} */
+>>>>>>> e0901eefbb8669c6e16c9612db4d3c11153022ef
 
 .icofont-rounded-expand:before {
     content: "\ea9a"
