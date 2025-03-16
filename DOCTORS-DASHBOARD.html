@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color:  #00208a;
+            color: #ecf0f1;
+            padding: 20px 0;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu {
+            margin-top: 30px;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .menu-item:hover {
+            background-color: #34495e;
+        }
+
+        .menu-item.active {
+            background-color: #3498db;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #fff;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        /* Tab Content Styles */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Card Styles for Patients */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-img {
+            height: 150px;
+            width: 100%;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-img img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card-content h3 {
+            margin-bottom: 5px;
+        }
+
+        .card-content p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .card-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .card-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background-color: #f9f9f9;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 14px;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Button Styles */
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .text-button {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .text-button:hover {
+            text-decoration: underline;
+        }
+
+        /* Search Box */
+        .search-box {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+
+        /* Patient Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .patient-info {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .patient-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .patient-details {
+            flex: 1;
+        }
+
+        .patient-details h3 {
+            margin-bottom: 10px;
+        }
+
+        .patient-detail-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 150px;
+        }
+
+        .prescription-history {
+            margin-top: 30px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #e6f4ea;
+            color: #137333;
+        }
+
+        .badge-pending {
+            background-color: #fef7e0;
+            color: #aa6800;
+        }
+
+        /* Icons using Unicode */
+        .icon {
+            margin-right: 10px;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Doctor Dashboard</h1>
+            <p>Dr. Johnson</p>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-tab="patients">
+                <span class="icon">👤</span> Patient Records
+            </div>
+            <div class="menu-item" data-tab="appointments">
+                <span class="icon">📅</span> Appointments
+            </div>
+            <div class="menu-item" data-tab="prescriptions">
+                <span class="icon">💊</span> Prescriptions
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+     
+    <div class="main-content">
+        
+        <!-- Patient Records Tab -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Total Patients Card -->
+            <div class="bg-blue-50 rounded-lg shadow-sm p-4 flex items-center">
+                <div class="mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-800" id="totalPatients">1,524</div>
+                    <div class="text-sm text-blue-600">Total Patients</div>
+                </div>
+            </div>
+    
+            <!-- Doctors Card -->
+            <div class="bg-green-50 rounded-lg shadow-sm p-4 flex items-center">
+                <div class="mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/>
+                        <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-green-800" id="totalDoctors">106</div>
+                    <div class="text-sm text-green-600">Doctors</div>
+                </div>
+            </div>
+    
+            <!-- Today's Appointments Card -->
+            <div class="bg-orange-50 rounded-lg shadow-sm p-4 flex items-center">
+                <div class="mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-orange-800" id="todaysAppointments">85</div>
+                    <div class="text-sm text-orange-600">Today's Appointments</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="patients" class="tab-content active">
+            <div class="header">
+                <h2>Patient Records</h2>
+                <input type="text" class="search-box" id="patient-search" placeholder="Search patients...">
+            </div>
+            <div class="content-container">
+                <div class="cards-container" id="patient-cards">
+                    <!-- Patient cards will be populated via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Tab -->
+        <div id="appointments" class="tab-content">
+            <div class="header">
+                <h2>Today's Appointments</h2>
+                <button class="btn" id="add-appointment">Add Appointment</button>
+            </div>
+            <div class="content-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointments-table">
+                        <!-- Appointments will be populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Prescriptions Tab -->
+        <div id="prescriptions" class="tab-content">
+            <div class="header">
+                <h2>Prescriptions</h2>
+                <button class="btn" id="add-prescription">New Prescription</button>
+            </div>
+            <div class="content-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Medication</th>
+                            <th>Dosage</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prescriptions-table">
+                        <!-- Prescriptions will be populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Details Modal -->
+    <div class="modal" id="patient-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Patient Details</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="patient-info" id="modal-patient-info">
+                <!-- Patient info will be populated via JavaScript -->
+            </div>
+            <div class="prescription-history">
+                <h3>Prescription History</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medication</th>
+                            <th>Dosage</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patient-prescriptions">
+                        <!-- Patient prescriptions will be populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const appointments = [
+            { id: 1, patient: "John Smith", time: "09:00 AM", date: "2025-03-12", reason: "Annual checkup" },
+            { id: 2, patient: "Emma Johnson", time: "10:30 AM", date: "2025-03-12", reason: "Follow-up" },
+            { id: 3, patient: "Michael Brown", time: "02:00 PM", date: "2025-03-12", reason: "Lab results review" },
+            { id: 4, patient: "Sarah Davis", time: "11:15 AM", date: "2025-03-13", reason: "Vaccination" }
+        ];
+        
+        const patients = [
+            { 
+                id: 101, 
+                name: "John Smith", 
+                age: 47,
+                dob: "1978-05-15", 
+                gender: "Male",
+                contact: "+1 (555) 123-4567",
+                email: "john.smith@email.com",
+                address: "123 Main Street, Anytown, USA",
+                medicalHistory: "Hypertension, Type 2 Diabetes",
+                allergies: "Penicillin",
+                lastVisit: "2024-12-10",
+                image: "/api/placeholder/300/300" // placeholder image
+            },
+            { 
+                id: 102, 
+                name: "Emma Johnson", 
+                age: 34,
+                dob: "1990-08-23", 
+                gender: "Female",
+                contact: "+1 (555) 234-5678",
+                email: "emma.johnson@email.com",
+                address: "456 Oak Avenue, Somewhere, USA",
+                medicalHistory: "Asthma, Seasonal allergies",
+                allergies: "None",
+                lastVisit: "2025-02-20",
+                image: "/api/placeholder/300/300" // placeholder image
+            },
+            { 
+                id: 103, 
+                name: "Michael Brown", 
+                age: 59,
+                dob: "1965-11-03", 
+                gender: "Male",
+                contact: "+1 (555) 345-6789",
+                email: "michael.brown@email.com",
+                address: "789 Pine Street, Nowhere, USA",
+                medicalHistory: "Coronary artery disease, Hyperlipidemia",
+                allergies: "Sulfa drugs",
+                lastVisit: "2025-03-01",
+                image: "/api/placeholder/300/300" // placeholder image
+            },
+            { 
+                id: 104, 
+                name: "Sarah Davis", 
+                age: 32,
+                dob: "1992-07-18", 
+                gender: "Female",
+                contact: "+1 (555) 456-7890",
+                email: "sarah.davis@email.com",
+                address: "101 Maple Road, Elsewhere, USA",
+                medicalHistory: "Migraine, Iron deficiency",
+                allergies: "Latex",
+                lastVisit: "2025-03-13",
+                image: "/api/placeholder/300/300" // placeholder image
+            },
+            { 
+                id: 105, 
+                name: "Robert Wilson", 
+                age: 68,
+                dob: "1956-03-28", 
+                gender: "Male",
+                contact: "+1 (555) 567-8901",
+                email: "robert.wilson@email.com",
+                address: "202 Cedar Lane, Anytown, USA",
+                medicalHistory: "Arthritis, Glaucoma",
+                allergies: "Aspirin",
+                lastVisit: "2025-02-05",
+                image: "/api/placeholder/300/300" // placeholder image
+            },
+            { 
+                id: 106, 
+                name: "Jennifer Taylor", 
+                age: 41,
+                dob: "1983-12-15", 
+                gender: "Female",
+                contact: "+1 (555) 678-9012",
+                email: "jennifer.taylor@email.com",
+                address: "303 Birch Boulevard, Somewhere, USA",
+                medicalHistory: "Hypothyroidism",
+                allergies: "None",
+                lastVisit: "2025-01-22",
+                image: "/api/placeholder/300/300" // placeholder image
+            }
+        ];
+        
+        const prescriptions = [
+            { 
+                id: 201, 
+                patientId: 101,
+                patient: "John Smith", 
+                medication: "Metformin 500mg", 
+                dosage: "1 tablet twice daily",
+                startDate: "2025-02-15",
+                endDate: "2025-05-15",
+                status: "Active"
+            },
+            { 
+                id: 202, 
+                patientId: 101,
+                patient: "John Smith", 
+                medication: "Lisinopril 10mg", 
+                dosage: "1 tablet daily",
+                startDate: "2024-10-10",
+                endDate: "2025-04-10",
+                status: "Active"
+            },
+            { 
+                id: 203, 
+                patientId: 102,
+                patient: "Emma Johnson", 
+                medication: "Albuterol Inhaler", 
+                dosage: "2 puffs as needed",
+                startDate: "2025-02-20",
+                endDate: "2025-08-20",
+                status: "Active"
+            },
+            { 
+                id: 204, 
+                patientId: 102,
+                patient: "Emma Johnson", 
+                medication: "Loratadine 10mg", 
+                dosage: "1 tablet daily",
+                startDate: "2024-11-15",
+                endDate: "2025-05-15",
+                status: "Active"
+            },
+            { 
+                id: 205, 
+                patientId: 103,
+                patient: "Michael Brown", 
+                medication: "Atorvastatin 20mg", 
+                dosage: "1 tablet daily at bedtime",
+                startDate: "2025-03-01",
+                endDate: "2025-09-01",
+                status: "Active"
+            },
+            { 
+                id: 206, 
+                patientId: 103,
+                patient: "Michael Brown", 
+                medication: "Aspirin 81mg", 
+                dosage: "1 tablet daily",
+                startDate: "2024-08-15",
+                endDate: "2025-08-15",
+                status: "Active"
+            },
+            { 
+                id: 207, 
+                patientId: 104,
+                patient: "Sarah Davis", 
+                medication: "Sumatriptan 50mg", 
+                dosage: "1 tablet at onset of migraine",
+                startDate: "2025-01-05",
+                endDate: "2025-07-05",
+                status: "Active"
+            },
+            { 
+                id: 208, 
+                patientId: 104,
+                patient: "Sarah Davis", 
+                medication: "Ferrous Sulfate 325mg", 
+                dosage: "1 tablet daily with food",
+                startDate: "2024-12-18",
+                endDate: "2025-06-18",
+                status: "Active"
+            },
+            { 
+                id: 209, 
+                patientId: 101,
+                patient: "John Smith", 
+                medication: "Glipizide 5mg", 
+                dosage: "1 tablet daily before breakfast",
+                startDate: "2024-05-10",
+                endDate: "2024-11-10",
+                status: "Expired"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar navigation
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all menu items
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Hide all tab content
+                    const tabContents = document.querySelectorAll('.tab-content');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Show the corresponding tab content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Populate data
+            populatePatientCards();
+            populateAppointmentsTable();
+            populatePrescriptionsTable();
+
+            // Add event listener for patient search
+            document.getElementById('patient-search').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredPatients = patients.filter(patient => 
+                    patient.name.toLowerCase().includes(searchTerm) || 
+                    patient.medicalHistory.toLowerCase().includes(searchTerm)
+                );
+                populatePatientCards(filteredPatients);
+            });
+
+            // Close modal button
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                document.getElementById('patient-details-modal').classList.remove('active');
+            });
+
+            // Button event listeners - these would normally open modals or forms
+            document.getElementById('add-appointment').addEventListener('click', function() {
+                alert('Add Appointment form would open here');
+            });
+
+            document.getElementById('add-prescription').addEventListener('click', function() {
+                alert('Add Prescription form would open here');
+            });
+        });
+
+        // Function to populate patient cards
+        function populatePatientCards(patientsData = patients) {
+            const cardsContainer = document.getElementById('patient-cards');
+            cardsContainer.innerHTML = '';
+            
+            if (patientsData.length === 0) {
+                cardsContainer.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">No patients found</p>';
+                return;
+            }
+            
+            patientsData.forEach(patient => {
+                const card = document.createElement('div');
+                card.className = 'card fade-in';
+                card.innerHTML = `
+                    <div class="card-img">
+                        <img src="${patient.image}" alt="${patient.name}">
+                    </div>
+                    <div class="card-content">
+                        <h3>${patient.name}</h3>
+                        <p>Age: ${patient.age} | Last Visit: ${patient.lastVisit}</p>
+                        <button class="card-btn" data-patient-id="${patient.id}">View Details</button>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+                
+                // Add event listener to the view details button
+                card.querySelector('.card-btn').addEventListener('click', function() {
+                    const patientId = parseInt(this.getAttribute('data-patient-id'));
+                    openPatientDetails(patientId);
+                });
+            });
+        }
+
+        // Function to open patient details modal
+        function openPatientDetails(patientId) {
+            const patient = patients.find(p => p.id === patientId);
+            if (!patient) return;
+            
+            // Populate patient info
+            const patientInfo = document.getElementById('modal-patient-info');
+            patientInfo.innerHTML = `
+                <img src="${patient.image}" alt="${patient.name}" class="patient-img">
+                <div class="patient-details">
+                    <h3>${patient.name}</h3>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Age:</span>
+                        <span>${patient.age}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Date of Birth:</span>
+                        <span>${patient.dob}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Gender:</span>
+                        <span>${patient.gender}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Contact:</span>
+                        <span>${patient.contact}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span>${patient.email}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Address:</span>
+                        <span>${patient.address}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Medical History:</span>
+                        <span>${patient.medicalHistory}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Allergies:</span>
+                        <span>${patient.allergies}</span>
+                    </div>
+                    <div class="patient-detail-row">
+                        <span class="detail-label">Last Visit:</span>
+                        <span>${patient.lastVisit}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Populate patient prescriptions
+            const patientPrescriptions = prescriptions.filter(p => p.patientId === patientId);
+            const prescriptionsTable = document.getElementById('patient-prescriptions');
+            prescriptionsTable.innerHTML = '';
+            
+            if (patientPrescriptions.length === 0) {
+                prescriptionsTable.innerHTML = '<tr><td colspan="5" style="text-align: center;">No prescription history</td></tr>';
+            } else {
+                patientPrescriptions.forEach(prescription => {
+                    const row = document.createElement('tr');
+                    const statusClass = prescription.status === 'Active' ? 'badge-success' : 'badge-pending';
+                    
+                    row.innerHTML = `
+                        <td>${prescription.medication}</td>
+                        <td>${prescription.dosage}</td>
+                        <td>${prescription.startDate}</td>
+                        <td>${prescription.endDate}</td>
+                        <td><span class="badge ${statusClass}">${prescription.status}</span></td>
+                    `;
+                    prescriptionsTable.appendChild(row);
+                });
+            }
+            
+            // Show the modal
+            document.getElementById('patient-details-modal').classList.add('active');
+        }
+
+        // Function to populate appointments table
+        function populateAppointmentsTable() {
+            const tableBody = document.getElementById('appointments-table');
+            tableBody.innerHTML = '';
+            
+            // Filter to show today's appointments only
+            const today = '2025-03-12'; // In a real app, this would be the current date
+            const todaysAppointments = appointments.filter(apt => apt.date === today);
+            
+            if (todaysAppointments.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4" style="text-align: center;">No appointments scheduled for today</td>';
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            todaysAppointments.forEach(appointment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${appointment.time}</td>
+                    <td>${appointment.patient}</td>
+                    <td>${appointment.reason}</td>
+                    <td>
+                        <button class="text-button">Edit</button>
+                        <button class="text-button">Start</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to populate prescriptions table
+        function populatePrescriptionsTable() {
+            const tableBody = document.getElementById('prescriptions-table');
+            tableBody.innerHTML = '';
+            
+            // Only show active prescriptions in the main list
+            const activePrescriptions = prescriptions.filter(p => p.status === 'Active');
+            
+            if (activePrescriptions.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="7" style="text-align: center;">No active prescriptions</td>';
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            activePrescriptions.forEach(prescription => {
+                const row = document.createElement('tr');
+                const statusClass = prescription.status === 'Active' ? 'badge-success' : 'badge-pending';
+                
+                row.innerHTML = `
+                    <td>${prescription.patient}</td>
+                    <td>${prescription.medication}</td>
+                    <td>${prescription.dosage}</td>
+                    <td>${prescription.startDate}</td>
+                    <td>${prescription.endDate}</td>
+                    <td><span class="badge ${statusClass}">${prescription.status}</span></td>
+                    <td>
+                        <button class="text-button">Edit</button>
+                        <button class="text-button">Renew</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
